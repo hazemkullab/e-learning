@@ -10,4 +10,30 @@ class BaseModel extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
+
+    public function getTransNameAttribute()
+    {
+        $name = $this->name;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current[app()->currentLocale()] : '';
+    }
+
+    public function getEnNameAttribute()
+    {
+        $name = $this->name;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['en'] : '';
+    }
+
+    public function getArNameAttribute()
+    {
+        $name = $this->name;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['ar'] : '';
+    }
+
+
 }

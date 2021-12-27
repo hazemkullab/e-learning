@@ -16,7 +16,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(funct
 
     Route::get('categories/trash', [CategoryController::class, 'trash'])->name('categories.trash');
     Route::get('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
-    Route::post('categories/{id}/forcedelete', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
+    Route::delete('categories/{id}/forcedelete', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
     Route::resource('categories', CategoryController::class);
 
 });

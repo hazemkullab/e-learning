@@ -17,7 +17,9 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::latest()->get();
-        return view('admin.categories.index', compact('categories'));
+        $type = 'index';
+
+        return view('admin.categories.index', compact('categories', 'type'));
     }
 
     /**
@@ -28,7 +30,8 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = Category::select('id', 'name')->get();
-        return view('admin.categories.create', compact('categories'));
+        $category = new Category();
+        return view('admin.categories.create', compact('categories', 'category'));
     }
 
     /**
@@ -84,7 +87,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $categories = Category::select('id', 'name')->get();
+
+        return view('admin.categories.edit', compact('category', 'categories'));
     }
 
     /**
@@ -96,7 +102,27 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name_en' => 'required',
+            'name_ar' => 'required',
+        ]);
+
+
+        $name = [
+            'en' => $request->name_en,
+            'ar' => $request->name_ar
+        ];
+
+        Category::findOrFail($id)->update([
+            'name' => json_encode($name, JSON_UNESCAPED_UNICODE),
+            'slug' => Str::slug($request->name_en),
+            'parent_id' => $request->parent_id
+        ]);
+
+        return redirect()
+                ->route('admin.categories.index')
+                ->with('msg', 'Category updated')
+                ->with('type', 'warning');
     }
 
     /**
@@ -107,7 +133,11 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::destroy($id);
+        return redirect()
+                ->route('admin.categories.index')
+                ->with('msg', 'Category moved to trash successfully')
+                ->with('type', 'info');
     }
 
     /**
@@ -117,7 +147,9 @@ class CategoryController extends Controller
      */
     public function trash()
     {
-
+        $categories = Category::onlyTrashed()->latest()->get();
+        $type = 'trash';
+        return view('admin.categories.index', compact('categories', 'type'));
     }
 
     /**
@@ -128,7 +160,11 @@ class CategoryController extends Controller
      */
     public function restore($id)
     {
-        //
+        Category::withTrashed()->find($id)->restore();
+        return redirect()
+                ->route('admin.categories.index')
+                ->with('msg', 'Category untrashed successfully')
+                ->with('type', 'success');
     }
 
     /**
@@ -139,6 +175,10 @@ class CategoryController extends Controller
      */
     public function forceDelete($id)
     {
-        //
+        Category::withTrashed()->find($id)->forceDelete();
+        return redirect()
+                ->route('admin.categories.index')
+                ->with('msg', 'Category detelet permanintley successfully')
+                ->with('type', 'danger');
     }
 }
