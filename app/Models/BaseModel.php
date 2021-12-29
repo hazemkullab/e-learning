@@ -36,4 +36,61 @@ class BaseModel extends Model
     }
 
 
+
+
+
+    // Excerpt
+    public function getTransExcerptAttribute()
+    {
+        $name = $this->excerpt;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current[app()->currentLocale()] : '';
+    }
+
+    public function getEnExcerptAttribute()
+    {
+        $name = $this->excerpt;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['en'] : '';
+    }
+
+    public function getArExcerptAttribute()
+    {
+        $name = $this->excerpt;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['ar'] : '';
+    }
+
+
+
+
+    // Content
+    public function getTransContentAttribute()
+    {
+        $name = $this->content;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current[app()->currentLocale()] : '';
+    }
+
+    public function getEnContentAttribute()
+    {
+        $name = $this->content;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['en'] : '';
+    }
+
+    public function getArContentAttribute()
+    {
+        $name = $this->content;
+        $name_current = json_decode($name, true);
+
+        return $name_current ? $name_current['ar'] : '';
+    }
+
+
 }

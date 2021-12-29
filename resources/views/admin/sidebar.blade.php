@@ -43,9 +43,9 @@
         </a>
         <div id="collapseCourses" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html">All Courses</a>
-                <a class="collapse-item" href="cards.html">Add New</a>
-                <a class="collapse-item" href="cards.html">Trash</a>
+                <a class="collapse-item" href="{{ route('admin.courses.index') }}">All Courses</a>
+                <a class="collapse-item" href="{{ route('admin.courses.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('admin.courses.trash') }}">Trash</a>
             </div>
         </div>
     </li>

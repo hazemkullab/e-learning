@@ -24,6 +24,15 @@
 
     <link href="{{ asset('adminasset/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
+    <style>
+        tr td,
+        tr th {
+            vertical-align: middle !important;
+        }
+    </style>
+
+    @yield('styles')
+
 </head>
 
 <body id="page-top">
@@ -204,6 +213,7 @@
         <!-- Page level custom scripts -->
         <script src="{{ asset('adminasset/js/demo/datatables-demo.js') }}"></script>
 
+        @yield('scripts')
 </body>
 
 </html>
