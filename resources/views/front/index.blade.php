@@ -23,52 +23,19 @@
     <div class="container">
         <div class="row no-gutters">
             <div class="course-categories">
-                <div class="category-item category-bg-1">
-                  <a href="#">
-                    <div class="category-icon">
-                        <i class="bi bi-laptop"></i>
-                    </div>
-                    <h4>Web Development</h4>
-                    <p>(4 Courses)</p>
-                  </a>
-                </div>
-                <div class="category-item category-bg-2">
+                @foreach ($categories as $item)
+                <div class="category-item category-bg-{{ $loop->iteration }}">
                     <a href="#">
-                        <div class="category-icon">
-                            <i class="bi bi-layer"></i>
-                        </div>
-                        <h4>Design</h4>
-                        <p>(12 Courses)</p>
+                      <div class="category-icon">
+                          <i class="bi bi-laptop"></i>
+                      </div>
+                      <h4>{{ $item->trans_name }}</h4>
+                      <p>({{ $item->courses->count() }} Courses)</p>
                     </a>
-                </div>
-                <div class="category-item category-bg-3">
-                   <a href="#">
-                    <div class="category-icon">
-                        <i class="bi bi-target-arrow"></i>
-                    </div>
-                    <h4>Marketing</h4>
-                    <p>(6 Courses)</p>
-                   </a>
-                </div>
+                  </div>
+                @endforeach
 
-                <div class="category-item category-bg-4">
-                   <a href="#">
-                    <div class="category-icon">
-                        <i class="bi bi-rocket2"></i>
-                    </div>
-                    <h4>Art & Design</h4>
-                    <p>(6 Courses)</p>
-                   </a>
-                </div>
-                <div class="category-item category-bg-5">
-                   <a href="#">
-                    <div class="category-icon">
-                        <i class="bi bi-shield"></i>
-                    </div>
-                    <h4>Design</h4>
-                    <p>(12 Courses)</p>
-                   </a>
-                </div>
+
             </div>
         </div>
     </div>

@@ -58,9 +58,9 @@
         </a>
         <div id="collapseVideos" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html">All Videos</a>
-                <a class="collapse-item" href="cards.html">Add New</a>
-                <a class="collapse-item" href="cards.html">Trash</a>
+                <a class="collapse-item" href="{{ route('admin.videos.index') }}">All Videos</a>
+                <a class="collapse-item" href="{{ route('admin.videos.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('admin.videos.trash') }}">Trash</a>
             </div>
         </div>
     </li>

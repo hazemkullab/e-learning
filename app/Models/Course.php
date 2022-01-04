@@ -8,4 +8,9 @@ class Course extends BaseModel
     {
         return $this->belongsTo(Category::class)->withDefault();
     }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
 }

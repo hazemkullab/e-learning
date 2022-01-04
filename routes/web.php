@@ -6,6 +6,7 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\VideoController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -28,6 +29,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(funct
     Route::get('courses/{id}/restore', [CourseController::class, 'restore'])->name('courses.restore');
     Route::delete('courses/{id}/forcedelete', [CourseController::class, 'forceDelete'])->name('courses.forceDelete');
     Route::resource('courses', CourseController::class);
+
+
+    // Videos routes
+    Route::get('videos/trash', [VideoController::class, 'trash'])->name('videos.trash');
+    Route::get('videos/{id}/restore', [VideoController::class, 'restore'])->name('videos.restore');
+    Route::delete('videos/{id}/forcedelete', [VideoController::class, 'forceDelete'])->name('videos.forceDelete');
+    Route::resource('videos', VideoController::class);
 
 });
 
