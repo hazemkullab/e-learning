@@ -13,17 +13,20 @@
     }
   });
 
+  var rtl = $('html').attr('lang') == 'ar' ? true : false;
+
   //  Tetsimonial 1
   $('.testimonials-slides').owlCarousel({
     loop: true,
     dots: true,
-    nav: false,
+    nav: true,
     margin: 10,
     autoplayHoverPause: true,
     autoplay: true,
     center: true,
     responsiveClass: true,
     autoplayTimeout: 4000,
+    rtl: rtl,
     responsive: {
       0: {
         items: 1
@@ -53,6 +56,7 @@
     autoplay: false,
     responsiveClass: true,
     autoplayTimeout: 4000,
+    rtl: rtl,
     navText: ["<i class='bi bi-arrow-left-rounded'></i>", "<i class='bi bi-arrow-right-rounded'></i>"],
     responsive: {
       0: {
@@ -84,6 +88,7 @@
     responsiveClass: true,
     autoplayTimeout: 4000,
     center: true,
+    rtl: rtl,
     navText: ["<i class='bi bi-arrow-left-rounded'></i>", "<i class='bi bi-arrow-right-rounded'></i>"],
     responsive: {
       0: {
@@ -104,7 +109,7 @@
     }
   });
 
-  //  Course Slider 
+  //  Course Slider
   $('.course-slides').owlCarousel({
     loop: true,
     dots: true,
@@ -114,6 +119,7 @@
     autoplay: false,
     center: true,
     responsiveClass: true,
+    rtl: rtl,
     responsive: {
       0: {
         items: 1
@@ -142,6 +148,7 @@
     autoplayHoverPause: true,
     autoplay: false,
     responsiveClass: true,
+    rtl: rtl,
     responsive: {
       0: {
         items: 1
@@ -159,8 +166,8 @@
         items: 3
       }
     }
-  }); 
-  
+  });
+
   // Counter
 
   $('.counter').counterUp({
@@ -177,6 +184,7 @@
     autoplay: false,
     navRewind: false,
     margin: 30,
+    rtl: rtl,
     navText: ["<i class='bx bx-left-arrow-alt'></i>", "<i class='bx bx-right-arrow-alt'></i>"],
     responsive: {
       0: {
@@ -195,8 +203,8 @@
         items: 4
       }
     }
-  }); 
-  
+  });
+
   // overlay search
 
   $('.search_toggle').on('click', function (e) {
@@ -271,7 +279,7 @@
   });
 
 
-  
+
    /*
     * ----------------------------------------------------------------------------------------
     *  SMOTH SCROOL JS
@@ -289,7 +297,7 @@
     /* ----------------------------------------------------------- */
       /*  Fixed header
       /* ----------------------------------------------------------- */
-  
+
       $(window).scroll(function () {
         var window_top = $(window).scrollTop() + 1;
         if (window_top > 50) {

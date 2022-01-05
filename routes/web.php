@@ -42,6 +42,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(funct
 Route::group(['prefix' => LaravelLocalization::setLocale()], function()
 {
     Route::get('/', [MainController::class, 'index'])->name('website.index');
+    Route::get('/category/{slug}', [MainController::class, 'category'])->name('website.category');
+    Route::get('/about', [MainController::class, 'about'])->name('website.about');
+    Route::get('/contact', [MainController::class, 'contact'])->name('website.contact');
+    Route::get('/courses', [MainController::class, 'courses'])->name('website.courses');
+    Route::get('/courses/{slug}', [MainController::class, 'courses_single'])->name('website.courses_single');
+    Route::get('/user/login', [MainController::class, 'login'])->name('website.login');
 });
 
 // Route::prefix(LaravelLocalization::setLocale())->group(function(){

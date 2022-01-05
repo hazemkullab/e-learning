@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="{{ app()->currentLocale() }}">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="description" content="edutim,coaching, distant learning, education html, health coaching, kids education, language school, learning online html, live training, online courses, online training, remote training, school html theme, training, university html, virtual training  ">
@@ -62,7 +62,7 @@
     <div class="site-navigation main_menu menu-2" id="mainmenu-area">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{ route('website.index') }}">
                     <img src="{{ asset('webasset/assets/images/logo-dark.png') }}" alt="Edutim" class="img-fluid">
                 </a>
 
@@ -81,25 +81,11 @@
                                 <i class="fa fa-grip-horizontal"></i>{{ __('web.Categoris') }}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbar3">
-                                 <a class="dropdown-item " href="#">
-                                    WordPress
-                                </a>
-                                <a class="dropdown-item " href="#">
-                                    Web Design
-                                </a>
-
-                                <a class="dropdown-item " href="#">
-                                    Marketing
-                                </a>
-                                 <a class="dropdown-item " href="#">
-                                    Graphics Design
-                                </a>
-                                <a class="dropdown-item " href="#">
-                                   Financial
-                                </a>
-                                <a class="dropdown-item " href="#">
-                                    Personal Growth
-                                </a>
+                                @foreach (App\Models\Category::all() as $item)
+                                    <a class="dropdown-item " href="{{ route('website.category', $item->slug) }}">
+                                        {{ $item->trans_name }}
+                                    </a>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -110,45 +96,25 @@
                     </form>
 
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active" href="#" id="navbar3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ __('web.home') }}<i class="fa fa-angle-down"></i>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbar3">
-                                 <a class="dropdown-item " href="index.html">
-                                    Home 1
-                                </a>
-                                <a class="dropdown-item " href="index-2.html">
-                                    Home 2
-                                </a>
-                                <a class="dropdown-item " href="index-3.html">
-                                    Home 3
-                                </a>
-                                <a class="dropdown-item " href="index-4.html">
-                                    Home 4
-                                </a>
-                                <a class="dropdown-item " href="index-5.html">
-                                    Home 5
-                                </a>
-                                 <a class="dropdown-item " href="index-6.html">
-                                    Home 6
-                                </a>
-                                <a class="dropdown-item " href="index-7.html">
-                                    Home 7
-                                </a>
-                                <a class="dropdown-item " href="index-8.html">
-                                    Home 8 <span>New</span>
-                                </a>
-
-                            </div>
-                        </li>
                         <li class="nav-item ">
-                            <a href="about.html" class="nav-link js-scroll-trigger">
+                            <a href="{{ route('website.index') }}" class="nav-link js-scroll-trigger {{ request()->routeIs('website.index') ? 'active' : '' }}">
+                                {{ __('web.home') }}
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a href="{{ route('website.about') }}" class="nav-link js-scroll-trigger {{ request()->routeIs('website.about') ? 'active' : '' }}">
                                 {{ __('web.About') }}
                             </a>
                         </li>
 
-                        <li class="nav-item dropdown">
+                        <li class="nav-item ">
+                            <a href="{{ route('website.courses') }}" class="nav-link js-scroll-trigger {{ request()->routeIs('website.courses') ? 'active' : '' }}">
+                                {{ __('web.Courses') }}
+                            </a>
+                        </li>
+
+                        {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbar3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ __('web.Courses') }}<i class="fa fa-angle-down"></i>
                             </a>
@@ -185,8 +151,8 @@
                                    Course Details Classic
                                </a>
                             </div>
-                        </li>
-                        <li class="nav-item dropdown">
+                        </li> --}}
+                        {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbar3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ @trans('web.Shop') }}<i class="fa fa-angle-down"></i>
                             </a>
@@ -236,10 +202,10 @@
                                     Blog Single
                                 </a>
                             </div>
-                        </li>
+                        </li> --}}
 
                         <li class="nav-item ">
-                            <a href="contact.html" class="nav-link">
+                            <a href="{{ route('website.contact') }}" class="nav-link {{ request()->routeIs('website.contact') ? 'active' : '' }}">
                                 {{ __('web.Contact') }}
                             </a>
                         </li>
@@ -270,7 +236,7 @@
                         </li> --}}
                     </ul>
 
-                    <a href="#" class="btn btn-main btn-small"><i class="fa fa-sign-in-alt mr-2"></i>{{ __('web.Login') }}</a>
+                    <a href="{{ route('website.login') }}" class="btn btn-main btn-small {{ request()->routeIs('website.login') ? 'active' : '' }}"><i class="fa fa-sign-in-alt mr-2"></i>{{ __('web.Login') }}</a>
 
                 </div> <!-- / .navbar-collapse -->
             </div> <!-- / .container -->
