@@ -4,6 +4,10 @@
 
 @section('content')
 
+@if (session('msg'))
+    <div class="alert alert-{{ session('type') }}">{{ session('msg') }}</div>
+@endif
+
 <section class="page-header">
     <div class="container">
       <div class="row justify-content-center">

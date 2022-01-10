@@ -48,6 +48,8 @@
     </style>
   @endif
 
+  @yield('style')
+
 </head>
 
 <body id="top-header">
@@ -401,6 +403,7 @@
     <script src="{{ asset('webasset/assets/vendors/owl/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('webasset/assets/js/script.js') }}"></script>
 
+    @yield('script')
 
   </body>
   </html>

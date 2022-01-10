@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Services\SMS;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class MainController extends Controller
 {
@@ -41,6 +45,12 @@ class MainController extends Controller
 
     public function courses()
     {
+        //$this->sms('0592418889', 'رسالة اخرى');
+
+        SMS::send('0592418889', 'رسالة جديدة');
+        // $sms = new SMS;
+        // $sms->send('0592418889', 'رسالة اخرى');
+
         $title = 'All Courses';
         $courses = Course::paginate(6);
 
@@ -94,10 +104,64 @@ class MainController extends Controller
         }
         curl_close($ch);
         $responseData = json_decode($responseData, true);
+        // dd($responseData);
         $checkoutId = $responseData['id'];
 
 
         return view('front.buy_course', compact('course', 'checkoutId'));
+    }
+
+    public function buy_course_thanks ($id)
+    {
+
+        $course = Course::findOrFail($id);
+
+        $resourcePath = request()->resourcePath;
+
+        $url = "https://eu-test.oppwa.com".$resourcePath;
+        $url .= "?entityId=8a8294174b7ecb28014b9699220015ca";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $responseData = curl_exec($ch);
+        if(curl_errno($ch)) {
+            return curl_error($ch);
+        }
+        curl_close($ch);
+
+        $responseData = json_decode($responseData, true);
+        $code = $responseData['result']['code'];
+
+        $valid = ['000.000.000', '000.000.100', '000.100.105', '000.100.106', '000.100.110', '000.100.111', '000.100.112'];
+        if(in_array($code, $valid)) {
+            // register course
+            DB::table('user_courses')->insert([
+                'user_id' => Auth::id(),
+                'course_id' => $id
+            ]);
+
+            // SEND Mobile SMS
+            //$this->sms('0592418889', 'رسالة اخرى');
+
+
+            // Delete * from users where id = 1 or 1 = 1
+
+            // DB::statement('INSERT INTO user_courses VALUES (?,?)', [Auth::id(), $id]);
+
+            //show success message
+            return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt success')->with('type', 'success');
+
+        }else {
+            //show error message
+
+            return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt faild')->with('type', 'danger');
+
+        }
     }
 
 }
