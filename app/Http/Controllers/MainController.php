@@ -49,7 +49,15 @@ class MainController extends Controller
 
     public function courses_single($slug)
     {
-        return $slug;
+        $course = Course::with('videos', 'category')->withCount('videos')->where('slug', $slug)->firstOrFail();
+
+        $related_courses = Course::where('category_id', $course->category_id)
+        ->where('id', '<>', $course->id)
+        ->latest()
+        ->limit(3)
+        ->get();
+
+        return view('front.course_single', compact('course', 'related_courses'));
     }
 
     public function login()
@@ -57,5 +65,39 @@ class MainController extends Controller
         return view('front.login');
     }
 
+    public function buy_course(Course $course)
+    {
+
+        $price = $course->price;
+        $discount = $price * ($course->discount / 100);
+
+        $total = $price - $discount;
+
+        $url = "https://eu-test.oppwa.com/v1/checkouts";
+        $data = "entityId=8a8294174b7ecb28014b9699220015ca" .
+                    // "&amount=" . $course->price - $course->discount.
+                    "&amount=" .  $total.
+                    "&currency=USD" .
+                    "&paymentType=DB";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $responseData = curl_exec($ch);
+        if(curl_errno($ch)) {
+            return curl_error($ch);
+        }
+        curl_close($ch);
+        $responseData = json_decode($responseData, true);
+        $checkoutId = $responseData['id'];
+
+
+        return view('front.buy_course', compact('course', 'checkoutId'));
+    }
 
 }
