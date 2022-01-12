@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
+use Checkout\CheckoutApi;
+use Checkout\Models\Tokens\Card;
+use Checkout\Models\Payments\TokenSource;
+use Checkout\Models\Payments\Payment;
+
 class MainController extends Controller
 {
     public function index()
@@ -78,90 +83,134 @@ class MainController extends Controller
     public function buy_course(Course $course)
     {
 
-        $price = $course->price;
-        $discount = $price * ($course->discount / 100);
+        // $price = $course->price;
+        // $discount = $price * ($course->discount / 100);
 
-        $total = $price - $discount;
+        // $total = $price - $discount;
 
-        $url = "https://eu-test.oppwa.com/v1/checkouts";
-        $data = "entityId=8a8294174b7ecb28014b9699220015ca" .
-                    // "&amount=" . $course->price - $course->discount.
-                    "&amount=" .  $total.
-                    "&currency=USD" .
-                    "&paymentType=DB";
+        // $url = "https://eu-test.oppwa.com/v1/checkouts";
+        // $data = "entityId=8a8294174b7ecb28014b9699220015ca" .
+        //             // "&amount=" . $course->price - $course->discount.
+        //             "&amount=" .  $total.
+        //             "&currency=USD" .
+        //             "&paymentType=DB";
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $responseData = curl_exec($ch);
-        if(curl_errno($ch)) {
-            return curl_error($ch);
-        }
-        curl_close($ch);
-        $responseData = json_decode($responseData, true);
-        // dd($responseData);
-        $checkoutId = $responseData['id'];
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        //             'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $responseData = curl_exec($ch);
+        // if(curl_errno($ch)) {
+        //     return curl_error($ch);
+        // }
+        // curl_close($ch);
+        // $responseData = json_decode($responseData, true);
+        // // dd($responseData);
+        // $checkoutId = $responseData['id'];
 
 
-        return view('front.buy_course', compact('course', 'checkoutId'));
+        // return view('front.buy_course', compact('course', 'checkoutId'));
+        return view('front.buy_course', compact('course'));
     }
 
-    public function buy_course_thanks ($id)
+    public function buy_course_thanks (Request $request, $id)
     {
 
-        $course = Course::findOrFail($id);
+        $token = request()->token;
+        // $token = $request->token;
 
-        $resourcePath = request()->resourcePath;
+// Set the secret key
+$secretKey = 'sk_test_bd926df9-453b-4096-9a80-3ac332645404';
 
-        $url = "https://eu-test.oppwa.com".$resourcePath;
-        $url .= "?entityId=8a8294174b7ecb28014b9699220015ca";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                        'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $responseData = curl_exec($ch);
-        if(curl_errno($ch)) {
-            return curl_error($ch);
-        }
-        curl_close($ch);
-
-        $responseData = json_decode($responseData, true);
-        $code = $responseData['result']['code'];
-
-        $valid = ['000.000.000', '000.000.100', '000.100.105', '000.100.106', '000.100.110', '000.100.111', '000.100.112'];
-        if(in_array($code, $valid)) {
-            // register course
-            DB::table('user_courses')->insert([
-                'user_id' => Auth::id(),
-                'course_id' => $id
-            ]);
-
-            // SEND Mobile SMS
-            //$this->sms('0592418889', 'رسالة اخرى');
+// Initialize the Checkout API in Sandbox mode. Use new CheckoutApi($liveSecretKey, false); for production
+$checkout = new CheckoutApi($secretKey);
 
 
-            // Delete * from users where id = 1 or 1 = 1
+// Create a payment method instance with card details
+$method = new TokenSource($token);
 
-            // DB::statement('INSERT INTO user_courses VALUES (?,?)', [Auth::id(), $id]);
+// Prepare the payment parameters
+$payment = new Payment($method, 'JOD');
+$payment->amount = 100 * 100; // = 10.00
 
-            //show success message
-            return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt success')->with('type', 'success');
+// Send the request and retrieve the response
+$response = $checkout->payments()->request($payment);
 
-        }else {
-            //show error message
+// dd($response->http_code == 201);
 
-            return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt faild')->with('type', 'danger');
+if($response->http_code == 201) {
+    return [
+        'msg' => 'Payment Done',
+        'type' => 'alert-success'
+    ];
+}else {
+    return [
+        'msg' => 'Payment Faild',
+        'type' => 'alert-danger'
+    ];
+}
 
-        }
+        // $course = Course::findOrFail($id);
+
+        // $resourcePath = request()->resourcePath;
+
+        // $url = "https://eu-test.oppwa.com".$resourcePath;
+        // $url .= "?entityId=8a8294174b7ecb28014b9699220015ca";
+
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        //                 'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
+        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $responseData = curl_exec($ch);
+        // if(curl_errno($ch)) {
+        //     return curl_error($ch);
+        // }
+        // curl_close($ch);
+
+        // $responseData = json_decode($responseData, true);
+        // $code = $responseData['result']['code'];
+
+        // $valid = ['000.000.000', '000.000.100', '000.100.105', '000.100.106', '000.100.110', '000.100.111', '000.100.112'];
+        // if(in_array($code, $valid)) {
+        //     // register course
+        //     DB::table('user_courses')->insert([
+        //         'user_id' => Auth::id(),
+        //         'course_id' => $id
+        //     ]);
+
+        //     // SEND Mobile SMS
+        //     //$this->sms('0592418889', 'رسالة اخرى');
+
+
+        //     // Delete * from users where id = 1 or 1 = 1
+
+        //     // DB::statement('INSERT INTO user_courses VALUES (?,?)', [Auth::id(), $id]);
+
+        //     //show success message
+        //     return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt success')->with('type', 'success');
+
+        // }else {
+        //     //show error message
+
+        //     return redirect()->route('website.courses_single', $course->slug)->with('msg', 'payemnt faild')->with('type', 'danger');
+
+        // }
+    }
+
+
+
+    public function test_data(Request $request)
+    {
+        $number = $request->number;
+
+        return ['final' => $number * $number];
     }
 
 }

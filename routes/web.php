@@ -50,6 +50,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     Route::get('/buy-course/{course:slug}', [MainController::class, 'buy_course'])->name('website.buy_course');
     Route::get('/buy-course/{id}/thanks', [MainController::class, 'buy_course_thanks'])->name('website.buy_course_thanks');
     Route::get('/user/login', [MainController::class, 'login'])->name('website.login');
+
+
+    Route::post('test-data', [MainController::class, 'test_data'])->name('test_data');
 });
 
 // Route::prefix(LaravelLocalization::setLocale())->group(function(){

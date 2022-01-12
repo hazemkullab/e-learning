@@ -147,6 +147,9 @@ iframe {
                     {{-- <script src="https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId={{ $checkoutId }}"></script>
                     <form action="{{ route('website.buy_course_thanks', $course->id) }}" class="paymentWidgets" data-brands="VISA MASTER AMEX MADA"></form> --}}
 
+                    <div id="show_alert" class="alert"></div>
+
+
                     <form
                     id="payment-form"
                     method="POST"
@@ -195,6 +198,16 @@ iframe {
 
                     </div>
                 </div>
+
+                <form id="test_form">
+
+                    <input type="text" name="nidal" />
+
+                    <button>Send</button>
+
+                </form>
+                <p id="show_result"></p>
+
             </div>
         </div>
     </section>
@@ -203,6 +216,45 @@ iframe {
 @stop
 
 @section('script')
+
+
+<script>
+
+    // alert()
+    // console.log()
+
+    // $(SELECTOR).EVENT(function() {
+    //     ACTION
+    // });
+
+    $('#test_form').submit(function(e) {
+        e.preventDefault();
+
+        // var text = $('#text').val();
+        var number = $('input[name=nidal]').val();
+
+        $.ajax({
+            type: 'post',
+            url: "{{ route('test_data') }}",
+            data: {
+                number: number,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(res) {
+                $('#show_result').text('Result of ('+ number + ' * ' + number +') is ' + res.final);
+            }
+        })
+
+        // console.log(text);
+
+    })
+
+</script>
+
+
+
+
+
 <script src="https://cdn.checkout.com/js/framesv2.min.js"></script>
 <script>
     /* global Frames */
@@ -210,7 +262,7 @@ var payButton = document.getElementById("pay-button");
 var form = document.getElementById("payment-form");
 var errorStack = [];
 
-Frames.init("pk_test_8ac41c0d-fbcc-4ae3-a771-31ea533a2beb");
+Frames.init("pk_test_4cdc42bd-192d-43da-b22a-f006ee847d36");
 
 Frames.addEventHandler(
   Frames.Events.CARD_VALIDATION_CHANGED,
@@ -272,6 +324,24 @@ function onCardTokenized(event) {
     'Your card token is: <span class="token">' +
     event.token +
     "</span>";
+
+    $.ajax({
+        url: "{{ route('website.buy_course_thanks', $course->id) }}",
+        type: 'get',
+        data: {
+            token: event.token
+        },
+        success: function(res) {
+            $('#show_alert').addClass(res.type);
+            $('#show_alert').text(res.msg);
+        },
+        error: function(res) {
+            $('#show_alert').addClass(res.type);
+            $('#show_alert').text(res.msg);
+        }
+    })
+
+
 }
 
 form.addEventListener("submit", function (event) {
