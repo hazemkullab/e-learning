@@ -51,6 +51,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     Route::get('/buy-course/{id}/thanks', [MainController::class, 'buy_course_thanks'])->name('website.buy_course_thanks');
     Route::get('/user/login', [MainController::class, 'login'])->name('website.login');
 
+    Route::get('/my-courses', [MainController::class, 'my_courses'])->name('website.my_courses');
+    Route::get('/courses/{slug}/videos', [MainController::class, 'course_videos'])->name('website.course_videos');
+    Route::get('videos/{id}', [MainController::class, 'video_single'])->name('website.video_single');
+
+    Route::post('videos/{id}', [MainController::class, 'video_watched'])->name('website.video_watched');
 
     Route::post('test-data', [MainController::class, 'test_data'])->name('test_data');
 });

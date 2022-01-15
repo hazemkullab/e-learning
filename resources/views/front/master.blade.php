@@ -238,7 +238,32 @@
                         </li> --}}
                     </ul>
 
-                    <a href="{{ route('website.login') }}" class="btn btn-main btn-small {{ request()->routeIs('website.login') ? 'active' : '' }}"><i class="fa fa-sign-in-alt mr-2"></i>{{ __('web.Login') }}</a>
+                    @if (Auth::check())
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbar3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Welcome, {{ Auth::user()->name }}<i class="fa fa-angle-down"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbar3">
+                                <a class="dropdown-item " href="{{ route('website.my_courses') }}">
+                                    My Courses
+                               </a>
+                               <a class="dropdown-item " href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit()">
+                                   Logout
+                               </a>
+
+                               <form id="logout-form" class="d-none" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            </form>
+
+                            </div>
+                        </li>
+                    </ul>
+                    @else
+                        <a href="{{ route('website.login') }}" class="btn btn-main btn-small {{ request()->routeIs('website.login') ? 'active' : '' }}"><i class="fa fa-sign-in-alt mr-2"></i>{{ __('web.Login') }}</a>
+                    @endif
+
+
 
                 </div> <!-- / .navbar-collapse -->
             </div> <!-- / .container -->

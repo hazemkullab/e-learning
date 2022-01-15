@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\User;
+use App\Models\Video;
+use App\Notifications\NewPayment;
 use App\Services\SMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,9 +53,14 @@ class MainController extends Controller
 
     public function courses()
     {
+
+        $user = User::where('email', 'moh@gmail.com')->first();
+
+        $user->notify(new NewPayment);
+
         //$this->sms('0592418889', 'رسالة اخرى');
 
-        SMS::send('0592418889', 'رسالة جديدة');
+        // SMS::send('0592418889', 'رسالة جديدة');
         // $sms = new SMS;
         // $sms->send('0592418889', 'رسالة اخرى');
 
@@ -213,4 +221,52 @@ if($response->http_code == 201) {
         return ['final' => $number * $number];
     }
 
+
+    public function my_courses()
+    {
+        $title = 'My Courses';
+
+        // $courses = Auth::user()->courses()->paginate(6);
+
+        $courses_ids = DB::table('user_courses')->where('user_id', Auth::id())->pluck('course_id')->toArray();
+        $courses = Course::whereIn('id', $courses_ids)->paginate(6);
+
+        $route_name = 'course_videos';
+
+        // dd($courses);
+
+        return view('front.courses', compact('title', 'courses', 'route_name'));
+    }
+
+    public function course_videos($slug)
+    {
+        $course = Course::with('videos')->where('slug', $slug)->first();
+        // dd($course);
+        $user_videos = DB::table('user_videos')->where('user_id', Auth::id())->where('course_id', $course->id)->pluck('video_id')->toArray();
+        // dd($user_videos);
+        return view('front.course_videos', compact('course', 'user_videos'));
+
+    }
+
+    public function video_single($id)
+    {
+        $video = Video::with('course')->findOrFail($id);
+
+        return view('front.video_single', compact('video'));
+    }
+
+    public function video_watched($id)
+    {
+        $video = Video::findOrFail($id);
+
+        DB::table('user_videos')->insert([
+            'user_id' => Auth::id(),
+            'video_id' => $id,
+            'course_id' => $video->course_id
+        ]);
+
+        $next_video = Video::where('id', '>', $video->id)->where('course_id', $video->course_id)->first();
+
+        return redirect()->route('website.video_single', $next_video->id);
+    }
 }

@@ -1,3 +1,10 @@
+@php
+$url = route('website.courses_single', $course->slug);
+if(isset($route_name)) {
+    $url = route('website.'.$route_name, $course->slug);
+}
+@endphp
+
 <div class="course-block">
     <div class="course-img">
         {{-- <img src="{{ asset('uploads/'. $course->image) }}" alt="" class="img-fluid"> --}}
@@ -8,7 +15,7 @@
     <div class="course-content">
         <div class="course-price ">${{ $course->price }}</div>
 
-        <h4><a href="{{ route('website.courses_single', $course->slug) }}">{{ $course->trans_name }}</a></h4>
+        <h4><a href="{{ $url }}">{{ $course->trans_name }}</a></h4>
         <div class="rating">
             <a href="#"><i class="fa fa-star"></i></a>
             <a href="#"><i class="fa fa-star"></i></a>
@@ -25,7 +32,7 @@
                 <span class="course-duration"><i class="bi bi-badge3"></i>82 Lessons</span>
             </div>
 
-            <div class="buy-btn"><a href="{{ route('website.courses_single', $course->slug) }}" class="btn btn-main-2 btn-small">Details</a></div>
+            <div class="buy-btn"><a href="{{ $url }}" class="btn btn-main-2 btn-small">Details</a></div>
         </div>
     </div>
 </div>
