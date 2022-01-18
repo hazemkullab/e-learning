@@ -57,6 +57,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
 
     Route::post('videos/{id}', [MainController::class, 'video_watched'])->name('website.video_watched');
 
+
+    Route::get('certificate/{user_id}/{course_id}', [MainController::class, 'certificate'])->name('website.certificate');
+
+
     Route::post('test-data', [MainController::class, 'test_data'])->name('test_data');
 });
 

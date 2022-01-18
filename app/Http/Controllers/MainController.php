@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Course;
+use Mpdf\Mpdf;
 use App\Models\User;
 use App\Models\Video;
-use App\Notifications\NewPayment;
 use App\Services\SMS;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-
+use App\Models\Course;
+use App\Models\Category;
 use Checkout\CheckoutApi;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Checkout\Models\Tokens\Card;
-use Checkout\Models\Payments\TokenSource;
+use App\Notifications\NewPayment;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Checkout\Models\Payments\Payment;
+use Checkout\Models\Payments\TokenSource;
 
 class MainController extends Controller
 {
@@ -268,5 +270,36 @@ if($response->http_code == 201) {
         $next_video = Video::where('id', '>', $video->id)->where('course_id', $video->course_id)->first();
 
         return redirect()->route('website.video_single', $next_video->id);
+    }
+
+    public function certificate($user_id, $course_id)
+    {
+        $user = User::findOrFail($user_id);
+        $course = Course::findOrFail($course_id);
+
+        $data_for_qr =  "mohamednaji.com witness that candidate " . $user->name ." has been successfully passed the course " . $course->trans_name;
+
+        // dd($user, $course);
+        $mpdf = new Mpdf([
+            'margin_top' => 0,
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'L',
+            'default-font' => 'Lato',
+        ]);
+
+        $data = view('front.certificates.content', compact('user', 'course', 'data_for_qr'))->render();
+
+        $mpdf->WriteHTML($data);
+
+        $file_name = rand().'-'.Str::slug($user->name).'.pdf';
+        $path = public_path('uploads/certificates/').$file_name;
+
+        $mpdf->Output($path, 'F');
+
+        return view('front.preview_certificate', compact('file_name'));
     }
 }

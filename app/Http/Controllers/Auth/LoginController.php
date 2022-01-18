@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    protected $maxAttempts = 2;
+    // protected $lockoutTime = (30 * 24 * 60);
+    protected $decayMinutes = 30 * 24 * 60;
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller

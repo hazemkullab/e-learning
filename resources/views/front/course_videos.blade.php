@@ -39,7 +39,7 @@
                 @endphp
 
                 @if ($percentage >= 20)
-                    <a href="#" class="btn btn-main px-5 mb-5">Certificate</a>
+                    <a href="{{ route('website.certificate', [Auth::id(), $course->id]) }}" class="btn btn-main px-5 mb-5">Certificate</a>
                 @endif
 
                 <div class="progress">
