@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\TestApiController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -64,6 +65,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     Route::post('test-data', [MainController::class, 'test_data'])->name('test_data');
 });
 
+
+// Route::prefix('test-api')->group(function() {
+    Route::get('/test-api', [TestApiController::class, 'index']);
+// });
 // Route::prefix(LaravelLocalization::setLocale())->group(function(){
 //     Route::get('/', [MainController::class, 'index'])->name('website.index');
 // });
