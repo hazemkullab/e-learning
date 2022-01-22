@@ -57,8 +57,10 @@ class MainController extends Controller
     {
 
         $user = User::where('email', 'moh@gmail.com')->first();
+        if($user) {
+            $user->notify(new NewPayment);
+        }
 
-        $user->notify(new NewPayment);
 
         //$this->sms('0592418889', 'رسالة اخرى');
 

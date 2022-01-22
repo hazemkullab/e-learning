@@ -32,12 +32,15 @@
           <div class="container">
               <div class="row">
                   <div class="col-md-6">
+                      @include('admin.errors')
                       <div class="woocommerce-notices-wrapper"></div>
                       <h2 class="font-weight-bold mb-4">Login</h2>
-                      <form class="woocommerce-form woocommerce-form-login login" method="post">
+                      <form class="woocommerce-form woocommerce-form-login login" method="post" action="{{ route('login') }}">
+                        @csrf
+
                           <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                               <label for="username">Username or email address&nbsp;<span class="required">*</span></label>
-                              <input type="text" class="woocommerce-Input woocommerce-Input--text input-text form-control" name="username" id="username" autocomplete="username" value="">
+                              <input type="text" class="woocommerce-Input woocommerce-Input--text input-text form-control" name="email" id="username" autocomplete="username" value="">
                           </p>
                           <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                               <label for="password">Password&nbsp;<span class="required">*</span></label>

@@ -68,12 +68,18 @@
                                     <button onclick="return confirm('Are you sure ?!!!!')" class="btn btn-dark btn-sm"><i class="fas fa-times"></i></button>
                                 </form>
                             @else
-                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>
-                                <form class="d-inline" action="{{ route('admin.categories.destroy', $category->id) }}" method="POST">
+                                @can('categories.edit')
+                                    <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>
+                                @endcan
+
+                                @can('categories.delete')
+                                    <form class="d-inline" action="{{ route('admin.categories.destroy', $category->id) }}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                </form>
+                                    </form>
+                                @endcan
+
                             @endif
 
 

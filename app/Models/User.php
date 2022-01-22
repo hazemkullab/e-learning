@@ -46,4 +46,19 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Course::class, 'user_courses');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    public function userHas($per)
+    {
+        foreach($this->roles as $role){
+            if($role->permissions()->where('code', $per)->exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
